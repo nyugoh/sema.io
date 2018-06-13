@@ -1,0 +1,13 @@
+{
+  "name": "sema.io",
+  "version": "1.0.0",
+  "description": "A realtime chat application to experience real-world applications",
+  "main": "sema.js",
+  "repository": "git@github.com:nyugoh/sema.io",
+  "author": "nyugoh <nyugoh@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "nodemon start"
+  }
+}
