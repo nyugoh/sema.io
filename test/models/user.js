@@ -4,6 +4,8 @@ import User from '../../app/models/User';
 import  '../../sema.js';
 
 chai.use(chaiHttp);
+// Change to test db
+process.env.MONGO_URL = 'mongodb://localhost/sema-test';
 
 describe("User model ", function () {
   beforeEach(done=>{
@@ -11,6 +13,7 @@ describe("User model ", function () {
       done();
     });
   });
+
 
   it("should return users", done =>{
     done();
