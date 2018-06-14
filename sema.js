@@ -13,6 +13,10 @@ app.use('*', (req, res, next) => {
   next();
 });
 
+app.get('/', (req, res)=> {
+  res.json({message: "Hello sema.io" });
+});
+
 app.get('/login', (req, res) =>{
   res.render("login");
 });
@@ -20,3 +24,5 @@ app.get('/login', (req, res) =>{
 app.listen(process.env.PORT, () => {
   console.log("App running on port ", process.env.PORT);
 });
+
+exports.default = app;
