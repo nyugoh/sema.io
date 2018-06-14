@@ -15,7 +15,13 @@ app.set("view engine", "ejs");
 app.set("views", "./app/views");
 app.use(express.static('public'));
 app.use(bodyParser.json());
-app.use(session({ secret: process.env.SECRET}));
+app.use(session({
+  secret: process.env.SECRET,
+  name: 'samwa.io',
+  proxy: true,
+  resave: true,
+  saveUninitialized: true
+}));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -29,8 +35,6 @@ mongoose.connect(process.env.MONGO_URL).then(()=>{
 
 app.use('/users', users);
 app.get('/', (req, res)=> {
-  if(req.user)
-    console.log(req.user)
   res.json({message: "Hello sema.io" });
 });
 

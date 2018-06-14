@@ -2,9 +2,11 @@ import { Router } from 'express';
 import User from '../models/User';
 import passport from 'passport'
 import local from 'passport-local';
+import facebook from 'passport-facebook';
 // import flash from 'connect-flash';
 
 const LocalStrategy = local.Strategy;
+const FacebookStrategy = facebook.Strategy;
 const router = Router();
 
 // router.use(flash());
@@ -34,6 +36,16 @@ router.post('/login',
     failureFlash: true })
 );
 
+router.get('/auth/facebook', passport.authenticate('facebook'));
+
+router.get('/auth/facebook/callback',
+  passport.authenticate('facebook', { failureRedirect: '/login' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/');
+  });
+
+
 passport.use(new LocalStrategy({
   usernameField: 'email',
   passwordField: 'password'
@@ -50,6 +62,28 @@ passport.use(new LocalStrategy({
     })
   });
 }));
+
+passport.use(new FacebookStrategy({
+    clientID: '402928113541224',
+    clientSecret: 'b8c4c0033a3655d7bd3dacfb23c0dd83',
+    callbackURL: "http://localhost:5000/users/auth/facebook/callback"
+  }, function(accessToken, refreshToken, profile, done) {
+    User.find({ providerId: profile.id}).then(user =>{
+      user = user[0];
+      if (user)
+        return done(null, user);
+    })
+    let user = new User({
+      providerId: profile.id,
+    });
+    user.save().then(user =>{
+      if (user)
+        return done(null, user);
+    }).catch( err => {
+      return done(null, false, { message: err.message });
+    });
+  }
+));
 
 passport.serializeUser(function(user, done) {
   done(null, user._id);

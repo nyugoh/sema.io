@@ -17,6 +17,9 @@ const userSchema = mongoose.Schema({
     type: String,
     default: "/assets/images/user-default-logo.png"
   },
+  providerId: {
+    type: String
+  }
 }, { timestamp: true });
 
 userSchema.methods.generateHash = password => bcrypt.genSalt(10).then( salt => salt ).then( salt => bcrypt.hash(password, salt)).then( hash => hash);
