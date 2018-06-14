@@ -3,10 +3,12 @@ import User from '../models/User';
 import passport from 'passport'
 import local from 'passport-local';
 import facebook from 'passport-facebook';
+import twitter from 'passport-twitter';
 // import flash from 'connect-flash';
 
 const LocalStrategy = local.Strategy;
 const FacebookStrategy = facebook.Strategy;
+const TwitterStrategy = twitter.Strategy;
 const router = Router();
 
 // router.use(flash());
@@ -38,13 +40,11 @@ router.post('/login',
 
 router.get('/auth/facebook', passport.authenticate('facebook'));
 
-router.get('/auth/facebook/callback',
-  passport.authenticate('facebook', { failureRedirect: '/login' }),
-  function(req, res) {
-    // Successful authentication, redirect home.
-    res.redirect('/');
-  });
+router.get('/auth/twitter', passport.authenticate('twitter'));
 
+router.get('/auth/facebook/callback', passport.authenticate('facebook', { successRedirect: '/', failureRedirect: '/login' }));
+
+router.get('/auth/twitter/callback', passport.authenticate('twitter', { successRedirect: '/', failureRedirect: '/login' }));
 
 passport.use(new LocalStrategy({
   usernameField: 'email',
@@ -75,6 +75,30 @@ passport.use(new FacebookStrategy({
     })
     let user = new User({
       providerId: profile.id,
+    });
+    user.save().then(user =>{
+      if (user)
+        return done(null, user);
+    }).catch( err => {
+      return done(null, false, { message: err.message });
+    });
+  }
+));
+
+passport.use(new TwitterStrategy({
+    consumerKey: '64fOrIMDceJnjMzWD2ZYnga92',
+    consumerSecret: 'cLdKEdw9ohSnhAQb0oSBJOgHvF30zvcWgNG5ZeAkACOA3ZvDvf',
+    callbackURL: "http://localhost:5000/users/auth/twitter/callback"
+  }, function(token, tokenSecrete, profile, done) {
+    User.find({ providerId: profile.id}).then(user =>{
+      user = user[0];
+      if (user)
+        return done(null, user);
+    })
+    let user = new User({
+      providerId: profile.id,
+      username: profile.username,
+      profile: profile.photos[0].value
     });
     user.save().then(user =>{
       if (user)
