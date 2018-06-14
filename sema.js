@@ -4,6 +4,8 @@ import dotenv from 'dotenv'
 const app = express();
 dotenv.config();
 
+app.use(express.static('public'));
+
 app.get('/', (req, res) =>{
   res.send("Hello Sema.io");
 });
