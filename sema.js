@@ -4,10 +4,17 @@ import dotenv from 'dotenv'
 const app = express();
 dotenv.config();
 
+app.set("view engine", "ejs");
+app.set("views", "./app/views");
 app.use(express.static('public'));
 
-app.get('/', (req, res) =>{
-  res.send("Hello Sema.io");
+app.use('*', (req, res, next) => {
+  console.log(req.url);
+  next();
+});
+
+app.get('/login', (req, res) =>{
+  res.render("login");
 });
 
 app.listen(process.env.PORT, () => {
