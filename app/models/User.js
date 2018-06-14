@@ -3,10 +3,12 @@ import bcrypt from 'bcrypt';
 
 const userSchema = mongoose.Schema({
   email: {
-    type: String
+    type: String,
+    unique: true
   },
   username: {
-    type: String
+    type: String,
+    unique: true
   },
   password: {
     type: String
@@ -19,7 +21,7 @@ const userSchema = mongoose.Schema({
 
 userSchema.methods.generateHash = password => bcrypt.genSalt(10).then( salt => salt ).then( salt => bcrypt.hash(password, salt)).then( hash => hash);
 
-userSchema.methods.compareHash = (hash, password) => bcrypt.compareSync(password, hash).then( isMatch => isMatch);
+userSchema.methods.compareHash = (hash, password) => bcrypt.compare(password, hash).then( isMatch => isMatch);
 
 
 module.exports = mongoose.model('User', userSchema);

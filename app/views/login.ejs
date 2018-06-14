@@ -21,7 +21,7 @@
         Log-in to your account
       </div>
     </h2>
-    <form class="ui large form">
+    <form class="ui large form" method="post" action="/users/login">
       <div class="ui stacked segment">
         <div class="field">
           <div class="ui left icon input">
@@ -36,6 +36,7 @@
           </div>
         </div>
         <div class="ui fluid large teal submit button">Login</div>
+        <div id="errors"></div>
       </div>
       <div class="ui error message"></div>
     </form>
@@ -45,6 +46,14 @@
   </div>
 </div>
 <script>
+  var message = <%- JSON.stringify(message) %>
+  if (message){
+    let errors = '';
+    for(var i in message.error){
+      errors += '<p style="color: #9F3A38; margin-top: 10px">'+message.error[i] + '</p>';
+    }
+    $('#errors').html(errors);
+  }
   $(document)
     .ready(function() {
       $('.ui.form')

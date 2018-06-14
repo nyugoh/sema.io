@@ -48,6 +48,7 @@
           </div>
         </div>-->
         <div class="ui fluid large teal submit button">Sign in</div>
+        <div id="errors"></div>
       </div>
       <div class="ui error message"></div>
     </form>
@@ -57,6 +58,14 @@
   </div>
 </div>
 <script>
+  var message = <%- JSON.stringify(message) %>
+  if (message){
+    let errors = '';
+    for(var i in message.error){
+      errors += '<p style="color: #9F3A38; margin-top: 10px">'+message.error[i] + '</p>';
+    }
+    $('#errors').html(errors);
+  }
   $(document).ready(function() {
       $('.ui.form').form({
         fields: {

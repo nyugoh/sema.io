@@ -1,8 +1,11 @@
 import express from 'express';
-import dotenv from 'dotenv'
-import mongoose from 'mongoose'
-import bluebird from 'bluebird'
-import bodyParser from 'body-parser'
+import dotenv from 'dotenv';
+import mongoose from 'mongoose';
+import bluebird from 'bluebird';
+import passport from 'passport';
+import bodyParser from 'body-parser';
+import session from 'express-session';
+import flash from 'connect-flash';
 import users from './app/controller/user';
 
 const app = express();
@@ -12,7 +15,11 @@ app.set("view engine", "ejs");
 app.set("views", "./app/views");
 app.use(express.static('public'));
 app.use(bodyParser.json());
+app.use(session({ secret: process.env.SECRET}));
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
 mongoose.Promise = bluebird;
 mongoose.connect(process.env.MONGO_URL).then(()=>{
   console.log("connected")
@@ -22,15 +29,17 @@ mongoose.connect(process.env.MONGO_URL).then(()=>{
 
 app.use('/users', users);
 app.get('/', (req, res)=> {
+  if(req.user)
+    console.log(req.user)
   res.json({message: "Hello sema.io" });
 });
 
 app.get('/login', (req, res) =>{
-  res.render("login");
+  res.render("login", { message: req.flash()});
 });
 
 app.get('/signin', (req, res) =>{
-  res.render("signin");
+  res.render("signin", { message: req.flash()});
 });
 
 app.listen(process.env.PORT, () => {
