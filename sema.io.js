@@ -11,8 +11,9 @@ import users from './app/controller/user';
 import * as utils from './app/utils/auth-routes';
 
 const app = express();
+const MongoStore = connectMongo(session);
+
 dotenv.config();
-let MongoStore = connectMongo(session);
 
 app.set("view engine", "ejs");
 app.set("views", "./app/views");
@@ -33,6 +34,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
+
 mongoose.Promise = bluebird;
 mongoose.connect(process.env.MONGODB_URL).then(()=>{
   console.log("connected")
@@ -43,15 +45,15 @@ mongoose.connect(process.env.MONGODB_URL).then(()=>{
 app.use('/users', users);
 
 app.get('/', utils.isAuthenticated, (req, res)=> {
-  res.json({message: "Hello sema.io" });
+  res.render('home');
 });
 
 app.get('/login', (req, res) =>{
-  res.render("login", { message: req.flash()});
+  res.render('login', { message: req.flash()});
 });
 
 app.get('/signin', (req, res) =>{
-  res.render("signin", { message: req.flash()});
+  res.render('signin', { message: req.flash()});
 });
 
 app.get('/logout', (req, res) =>{
@@ -59,8 +61,4 @@ app.get('/logout', (req, res) =>{
   res.redirect('/login');
 });
 
-app.listen(process.env.PORT, () => {
-  console.log("App running on port ", process.env.PORT);
-});
-
-exports.default = app;
+module.exports = app;
