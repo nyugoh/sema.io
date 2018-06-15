@@ -16,8 +16,8 @@ app.set("views", "./app/views");
 app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(session({
-  secret: process.env.SECRET,
-  name: 'samwa.io',
+  secret: process.env.COOKIE_SECRET,
+  name: 'sama.io-auth-cookie',
   proxy: true,
   resave: true,
   saveUninitialized: true
@@ -27,13 +27,14 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 mongoose.Promise = bluebird;
-mongoose.connect(process.env.MONGO_URL).then(()=>{
+mongoose.connect(process.env.MONGODB_URL).then(()=>{
   console.log("connected")
 }).catch(error =>{
   console.log(error.message)
 });
 
 app.use('/users', users);
+
 app.get('/', (req, res)=> {
   res.json({message: "Hello sema.io" });
 });

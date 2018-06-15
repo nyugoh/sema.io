@@ -4,14 +4,15 @@ import passport from 'passport'
 import local from 'passport-local';
 import facebook from 'passport-facebook';
 import twitter from 'passport-twitter';
-// import flash from 'connect-flash';
+import dotenv from 'dotenv';
 
 const LocalStrategy = local.Strategy;
 const FacebookStrategy = facebook.Strategy;
 const TwitterStrategy = twitter.Strategy;
 const router = Router();
 
-// router.use(flash());
+dotenv.config();
+
 router.post('/signin', (req, res) => {
   let user = new User(req.body);
   user.generateHash(req.body.password).then( hash =>{
@@ -32,11 +33,7 @@ router.post('/signin', (req, res) => {
   });
 });
 
-router.post('/login',
-  passport.authenticate('local', { successRedirect: '/',
-    failureRedirect: '/login',
-    failureFlash: true })
-);
+router.post('/login', passport.authenticate('local', { successRedirect: '/', failureRedirect: '/login', failureFlash: true }));
 
 router.get('/auth/facebook', passport.authenticate('facebook'));
 
@@ -64,9 +61,9 @@ passport.use(new LocalStrategy({
 }));
 
 passport.use(new FacebookStrategy({
-    clientID: '402928113541224',
-    clientSecret: 'b8c4c0033a3655d7bd3dacfb23c0dd83',
-    callbackURL: "http://localhost:5000/users/auth/facebook/callback"
+    clientID: process.env.FACEBOOK_KEY,
+    clientSecret: process.env.FACEBOOK_SECRETE,
+    callbackURL: `${process.env.BASE_URL}/users/auth/facebook/callback`
   }, function(accessToken, refreshToken, profile, done) {
     User.find({ providerId: profile.id}).then(user =>{
       user = user[0];
@@ -86,9 +83,9 @@ passport.use(new FacebookStrategy({
 ));
 
 passport.use(new TwitterStrategy({
-    consumerKey: '64fOrIMDceJnjMzWD2ZYnga92',
-    consumerSecret: 'cLdKEdw9ohSnhAQb0oSBJOgHvF30zvcWgNG5ZeAkACOA3ZvDvf',
-    callbackURL: "http://localhost:5000/users/auth/twitter/callback"
+    consumerKey: process.env.TWITTER_KEY,
+    consumerSecret: process.env.TWITTER_SECRETE,
+    callbackURL: `${process.env.BASE_URL}/users/auth/twitter/callback`
   }, function(token, tokenSecrete, profile, done) {
     User.find({ providerId: profile.id}).then(user =>{
       user = user[0];
