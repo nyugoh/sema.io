@@ -1,4 +1,4 @@
-const app = require("../sema.js");
+const app = require("../sema.io.js");
 const chai = require("chai");
 const expect = require("chai").expect;
 const chaiHttp = require("chai-http");

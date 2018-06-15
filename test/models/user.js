@@ -1,7 +1,7 @@
 import chai, { expect } from 'chai';
 import chaiHttp from 'chai-http';
 import User from '../../app/models/User';
-import  '../../sema.js';
+import '../../sema.io.js';
 
 chai.use(chaiHttp);
 // Change to test db

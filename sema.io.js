@@ -6,10 +6,13 @@ import passport from 'passport';
 import bodyParser from 'body-parser';
 import session from 'express-session';
 import flash from 'connect-flash';
+import connectMongo from 'connect-mongo';
 import users from './app/controller/user';
+import * as utils from './app/utils/auth-routes';
 
 const app = express();
 dotenv.config();
+let MongoStore = connectMongo(session);
 
 app.set("view engine", "ejs");
 app.set("views", "./app/views");
@@ -20,7 +23,11 @@ app.use(session({
   name: 'sama.io-auth-cookie',
   proxy: true,
   resave: true,
-  saveUninitialized: true
+  saveUninitialized: true,
+  store: new MongoStore({
+    mongooseConnection: mongoose.connection,
+    ttl: 2 * 24 * 60 * 60 // 2 days
+  })
 }));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(passport.initialize());
@@ -35,7 +42,7 @@ mongoose.connect(process.env.MONGODB_URL).then(()=>{
 
 app.use('/users', users);
 
-app.get('/', (req, res)=> {
+app.get('/', utils.isAuthenticated, (req, res)=> {
   res.json({message: "Hello sema.io" });
 });
 
@@ -45,6 +52,11 @@ app.get('/login', (req, res) =>{
 
 app.get('/signin', (req, res) =>{
   res.render("signin", { message: req.flash()});
+});
+
+app.get('/logout', (req, res) =>{
+  req.logout();
+  res.redirect('/login');
 });
 
 app.listen(process.env.PORT, () => {
