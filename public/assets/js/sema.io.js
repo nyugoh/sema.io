@@ -18,3 +18,9 @@ socket.on( 'disconnect', function () {
 socket.on( 'hello', function (data) {
   console.log( data );
 } );
+
+gopher = io.connect('/gopher');
+
+gopher.on( 'gopher', function (data) {
+  console.log( data );
+} );
