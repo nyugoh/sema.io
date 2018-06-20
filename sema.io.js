@@ -42,6 +42,10 @@ mongoose.connect(process.env.MONGODB_URL).then(()=>{
   console.log(error.message)
 });
 
+app.use(function(req, res, next) {
+  res.locals.messages = req.flash();
+  next();
+});
 app.use('/users', users);
 
 app.get('/', utils.isAuthenticated, (req, res)=> {
