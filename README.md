@@ -3,8 +3,8 @@
 A Real Time Chat Application built using Node.js, Express, Mongoose, Socket.io, Passport, &amp; Redis
 
 # Features to implement
-- Basic Nodejs Http Server using [Express](https://www.express.com/)
-- Templating using [EJS](http://ejs.co/)
+[x] Basic Nodejs Http Server using [Express](https://www.express.com/)
+[ ] Templating using [EJS](http://ejs.co/)
 - User authentication using [Passport](http://www.passportjs.org/) ~ Login using Facebook, Twitter, Google and Github
 - Express sessions, Stored in MongoDB
 - Realtime chat using [Socket.io](https://socket.io/)
